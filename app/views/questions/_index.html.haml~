@@ -1,0 +1,43 @@
+%html
+  %head
+    %title QnA Forum
+    %link{:rel => 'stylesheet', :href => '../bootstrap.css', :type => "text/css"}
+    %link{:rel => 'stylesheet', :href => '../bootstrap-responsive.css', :type => "text/css"}
+    = javascript_include_tag :defaults
+    :javascript
+      function b1() {
+      alert("asdasd");
+      }
+  %body
+    %div.container
+      %div.span12
+        %h1.span3 QnA Forum
+        %div.span4.well
+          -if user_signed_in?
+            = "welcome #{current_user.name}"
+            = link_to "Log out", destroy_user_session_path, :method => :delete
+          -else
+            = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
+              = f.label :email
+              = f.email_field :email
+              = f.label :password
+              = f.password_field :password
+              = f.submit "Sign in"
+              = link_to "Register User", new_user_registration_path, :method => :get
+      %div.span12 
+        %h2.row.span Questions
+      .span12
+        - @questions.each do |question|
+          %h3.span12.row
+            = link_to "#{question.question}", question
+          %h6.span12.row
+            = "Replays #{Answer.find(:all, :conditions => {:question_id => question.id}).count}"
+            = ".       Posted By   #{User.find(question.user_id).name}"
+        .span12  
+          = will_paginate @questions
+      -if user_signed_in?
+        .span12
+          = form_for @question, :url => questions_path(@question), :method => :post do |f|
+            = f.label :question, 'Question'
+            = f.text_field :question
+            = f.submit 'Ask'

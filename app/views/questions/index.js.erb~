@@ -1,0 +1,1 @@
+jQuery("#right_col").html("<%= escape_javascript(render(partial => 'index'))%>");

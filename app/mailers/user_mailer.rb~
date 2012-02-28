@@ -1,0 +1,10 @@
+class UserMailer < ActionMailer::Base
+  default from: "from@example.com"
+
+  def email_to_owner(user, answer)
+    @user = user
+    @answer = answer 
+    @url  = "http://example.com/login"
+    mail(:to => user.email, :subject => "Reply to your question")
+  end
+end

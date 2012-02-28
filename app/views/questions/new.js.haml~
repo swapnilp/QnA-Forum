@@ -1,0 +1,4 @@
+:javascript
+  var comment_form = $('<%= j(render(:partial => "form"))%>');
+
+  $('#new_comment').html(comment_form);

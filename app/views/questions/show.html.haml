@@ -1,0 +1,45 @@
+%html
+  %head
+    %title QnA Forum
+    %link{:rel => 'stylesheet', :href => '../bootstrap.css', :type => "text/css"}
+    %link{:rel => 'stylesheet', :href => '../bootstrap-responsive.css', :type => "text/css"}
+  %body
+    %div.container
+      %div.span12
+        %h1.span3 QnA Forum
+        %div.span4.well
+          -if user_signed_in?
+            = "welcome #{current_user.name}"
+            = link_to "Log out", destroy_user_session_path, :method => :delete
+          -else
+            = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
+              = f.label :email
+              = f.email_field :email
+              = f.label :password
+              = f.password_field :password
+              = f.submit "Sign in"
+      %div.span12
+        %h2.span Question: #{@question.question}
+        .span12
+          - @answers.each_with_index do |answer, i|
+            %h3.span10.row
+              = "Answer #{i+1}. #{answer.answer}"
+            %h6.offset1.span8.row
+              = "Answerd #{answer.created_at} by #{User.find(answer.user_id).name} Total raiting  :  #{answer.rating}"
+            - if user_signed_in?
+              %h6.offset1.span8.row
+                - if Answerrating.find(:all, :conditions => {:answer_id => answer.id, :user_id => current_user}) == []
+                  = form_for [@question, answer], :action => "questions/:#{@question.id}/answers/:#{answer.id}", :method => :put do |f|
+                    = "Your rating"
+                    = f.select("rating", current_user.karma > 10 ? [1,2,3,4,5] : [3,4,5], {:prompt => 1}, :class => 'span1')
+                    = f.submit 'post'
+                - if Answerrating.find(:all, :conditions => {:answer_id => answer.id, :user_id => current_user}) != []
+                  = "Your rated #{Answerrating.find(:first, :conditions => {:answer_id => answer.id, :user_id => current_user}).rating}"
+        -if user_signed_in?
+          .span12
+            = form_for [@question, @answer], :action => "questions/#{@question.id}/answers", :method => :post do |f|
+              = f.label :answer, 'Answer'
+              = f.text_field :answer
+              = f.submit 'Post'
+      .span12
+        = link_to "Back", questions_path, :method => :get

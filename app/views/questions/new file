@@ -1,0 +1,8 @@
+/home/swapnil/work/QnA-Forum/app/views/questions/index.html.haml
+
+jQuery("#right_col").html("<%= escape_javascript(render(partial => 'index'))%>");
+
+where #right_col is html div id
+
+
+render :action => "index"

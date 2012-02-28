@@ -1,0 +1,8 @@
+class CreateAnswerratings < ActiveRecord::Migration
+  def change
+    create_table :answerratings do |t|
+
+      t.timestamps
+    end
+  end
+end

@@ -1,0 +1,11 @@
+class CreateAnswers < ActiveRecord::Migration
+  def change
+    create_table :answers do |t|
+      t.references :user
+      t.references :question
+      t.string :answer
+      t.integer :rating, :default => 3
+      t.timestamps
+    end
+  end
+end

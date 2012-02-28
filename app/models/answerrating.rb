@@ -1,0 +1,19 @@
+class Answerrating < ActiveRecord::Base
+  attr_accessible :user_id, :rating, :answer_id
+  #associations                                                                                                                                                                                      
+  belongs_to :answer
+  belongs_to :user
+
+  #validations                                                                                                                                                                                       
+  validates :answer_id, :presence => true
+  validates :user_id, :presence => true#, :uniqueness => { :scope => :answer_id,
+#    :message => "should happen once per answer" }
+  validates :rating, :presence => true
+  #callbacks                                                                                                                                                                                         
+  before_validation :validate_user_answer
+
+  def validate_user_answer
+    errors.add(:user_id, "not valid") if User.find_by_id(self[:user_id]) == nil
+    errors.add(:answer_id, "not valid") if Answer.find_by_id(self[:answer_id]) == nil
+  end
+end
